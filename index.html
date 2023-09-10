@@ -117,8 +117,10 @@
       <span>Ultraviolet &copy; TN 2023</span>
     </footer>
     <script>
-    if(document.referrer.includes("file:///") == false){
-      alert(document.referrer);
+    if(document.referrer != '' || window == top){
+      window = function(){
+        return false;
+      }
     }
     </script>
   </body>
