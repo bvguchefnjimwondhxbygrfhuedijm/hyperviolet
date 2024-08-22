@@ -64,7 +64,7 @@ async function registerSW() {
   // Treat the input as a search query
   return template.replace("%s", encodeURIComponent(input));
 }
-async function do(){
+async function doIt(){
   try {
     await registerSW();
   } catch (err) {
@@ -74,7 +74,7 @@ alert("Redirecting to IXL...")
   location.href = __uv$config.prefix + __uv$config.encodeUrl("https://ixl.com");
 }
 
-do();
+doIt();
     </script>
   </body>
 </html>
