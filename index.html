@@ -71,7 +71,7 @@ async function doIt(){
     alert(err.message);
   }
 alert("Redirecting to IXL...")
-  location.href = __uv$config.prefix + __uv$config.encodeUrl("https://ixl.com");
+  location.href = window.__uv$config.prefix + window.__uv$config.encodeUrl("https://ixl.com");
 }
 
 doIt();
